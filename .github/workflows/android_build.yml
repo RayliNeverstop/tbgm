@@ -31,7 +31,6 @@ jobs:
             libssl-dev \
             libffi-dev \
             libsqlite3-dev \
-            owasp-dependency-check \
             openjdk-17-jdk \
             zip \
             unzip \
