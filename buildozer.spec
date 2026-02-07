@@ -29,7 +29,7 @@ version = 0.7.0
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3==3.11.9,flet,android,jnius,cryptography,google-auth,google-auth-oauthlib,google-api-python-client,numpy,pandas,openpyxl,httpx,idna,httpcore,sniffio,pyasn1,pyasn1_modules,rsa,cachetools,uritemplate,h11,oauthlib,requests-oauthlib,requests,msgpack,websockets,typing_extensions,packaging,platformdirs,httplib2,python-dateutil,pytz,certifi,charset-normalizer,urllib3,six,repath
+requirements = python3==3.11.9,flet,android,jnius,cryptography,google-auth,google-auth-oauthlib,google-api-python-client,numpy,pandas,openpyxl,httpx,idna,httpcore,sniffio,pyasn1,pyasn1_modules,rsa,cachetools,uritemplate,h11,oauthlib,requests-oauthlib,requests,msgpack,websockets,typing_extensions,packaging,platformdirs,httplib2,python-dateutil,pytz,certifi,charset-normalizer,urllib3,six,repath,flet-web,uvicorn,fastapi,python-multipart
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
