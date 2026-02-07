@@ -55,6 +55,8 @@ jobs:
           pip install buildozer cython==0.29.36
           
       - name: Build with Buildozer
+        env:
+          GRADLE_OPTS: "-Xmx4096m -Dorg.gradle.jvmargs='-Xmx4096m -XX:MaxMetaspaceSize=1g'"
         run: |
           # Force accept license agreements
           yes | buildozer android debug
