@@ -1,0 +1,63 @@
+{
+    "pace": {
+        "min": 95,
+        "max": 105,
+        "tactic_bonus": 8
+    },
+    "shooting": {
+        "base_pct": 0.45,
+        "variance_low": 0.85,
+        "variance_high": 1.15,
+        "hot_hand_bonus_per_streak": 0.05,
+        "hot_hand_cap": 0.15,
+        "three_pt_freq_pg_sg_sf": 0.4,
+        "attribute_impact_divisor": 350,
+        "three_pt_penalty": 0.72
+    },
+    "defense": {
+        "defense_impact_factor": 0.8,
+        "base_block_chance": 0.02,
+        "block_divisor": 700,
+        "big_block_small_bonus": 0.05,
+        "base_to_chance": 0.10,
+        "steal_divisor": 800,
+        "to_divisor": 1000,
+        "steal_ratio_of_to": 0.7
+    },
+    "playmaking": {
+        "assist_divisor": 45,
+        "guard_bonus": 1.5
+    },
+    "usage": {
+        "attribute_exponent": 3.5,
+        "attribute_weights": {
+            "2pt": 1.5,
+            "3pt": 1.2,
+            "consistency": 0.5
+        },
+        "option_multipliers": [
+            3.5,
+            2.2,
+            1.5
+        ],
+        "rotation_multipliers": {
+            "++": 1.5,
+            "+": 1.2,
+            " ": 1.0,
+            "-": 0.8,
+            "--": 0.3
+        },
+        "tactics_bonus": 1.3
+    },
+    "ovr_mechanics": {
+        "baseline": 85,
+        "factor_per_point": 0.022
+    },
+    "consistency": {
+        "floor_bonus": 0.15
+    },
+    "microwave": {
+        "streak_req": 2,
+        "max_bonus": 5.0
+    }
+}

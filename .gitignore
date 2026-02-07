@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# Buildozer (Android Build Artifacts)
+.buildozer/
+bin/
+*.apk
+*.aab
+
+# Flet / Flutter
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Project Specific
+secret.key
+debug_out.txt
+output.log
+error.log
+trace.txt
+game_saves/
