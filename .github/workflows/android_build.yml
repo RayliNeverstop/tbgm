@@ -49,11 +49,6 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython==0.29.36
           
-      # Clean up Buildozer directories to avoid stale cache issues in fresh VM
-      - name: Clean Buildozer
-        run: |
-          buildozer android clean
-          
       - name: Build with Buildozer
         run: |
           # Force accept license agreements
