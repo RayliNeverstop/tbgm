@@ -1,4 +1,4 @@
-flet
+flet==0.25.2
 numpy
 pandas
 openpyxl

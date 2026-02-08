@@ -22,7 +22,7 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         channel: stable
-        flutter-version: 3.38.7
+        flutter-version: 3.27.1
 
     - name: Prepare Requirements
       run: |
@@ -32,19 +32,24 @@ jobs:
     - name: Install Build Tools
       run: |
         pip install --upgrade pip
-        pip install flet
+        pip install -r requirements_build.txt
 
     - name: Flet Build APK
       run: |
         # Build the APK. 
         # --verbose helps debug if something goes wrong.
-        yes | flet build apk --project "tbgm" --org "org.antigravity" --product "Taiwan Basketball GM" --verbose
+        flet build apk --project "tbgm" --org "org.antigravity" --product "Taiwan Basketball GM" --verbose
+
+    - name: List Build Output (Debug)
+      run: |
+        echo "Listing build directory:"
+        ls -R build || echo "Build directory not found"
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: android-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+        path: build/app/outputs/flutter-apk/*.apkp-release.apk
 
     # For Google Play, we eventually want AAB. 
     # Uncomment the following when ready for release.
