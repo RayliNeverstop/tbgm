@@ -6,3 +6,8 @@ cryptography
 google-auth
 google-auth-oauthlib
 google-api-python-client
+fastapi
+starlette
+uvicorn
+python-multipart
+websockets
