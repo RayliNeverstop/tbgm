@@ -48,12 +48,14 @@ jobs:
       run: |
         echo "Listing build directory:"
         ls -R build || echo "Build directory not found"
+        echo "Finding APKs:"
+        find . -name "*.apk"
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: android-apk
-        path: build/app/outputs/flutter-apk/*.apk
+        path: build/**/*.apk
 
     # For Google Play, we eventually want AAB. 
     # Uncomment the following when ready for release.
