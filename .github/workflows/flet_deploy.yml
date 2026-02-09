@@ -53,7 +53,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: android-apk
-        path: build/app/outputs/flutter-apk/*.apkp-release.apk
+        path: build/app/outputs/flutter-apk/*.apk
 
     # For Google Play, we eventually want AAB. 
     # Uncomment the following when ready for release.
