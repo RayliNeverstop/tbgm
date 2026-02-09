@@ -39,16 +39,20 @@ def main(page: ft.Page):
         page.vertical_alignment = ft.MainAxisAlignment.CENTER
         page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         
-        # --- Authentication Note ---
-        # We now use DriveManager's explicit login flow (google-auth-oauthlib)
-        # instead of Flet's page.login which had issues on Desktop.
+        # --- Authentication Setup ---
+        from flet.auth.providers import GoogleOAuthProvider
+        
+        # TODO: Replace with your actual Client ID and Secret from Google Cloud Console
+        # On Android, the redirect_url is handled by Flet/Flutter internally usually, 
+        # but defining one helps Flet know it's a web flow.
+        page.auth_provider = GoogleOAuthProvider(
+            client_id="YOUR_CLIENT_ID_HERE",
+            client_secret="YOUR_CLIENT_SECRET_HERE",
+            redirect_url="https://localhost/callback" 
+        )
         # ---------------------------
         
         # Initialize Game Manager
-        
-        # Initialize Game Manager
-        # Use CWD + 'game_saves' to avoid Android Permission Denied on root /data
-        # os.expanduser("~") was resolving to /data which is Read-Only.
         save_dir = os.path.join(os.getcwd(), "game_saves")
         if not os.path.exists(save_dir):
             try:
@@ -58,7 +62,6 @@ def main(page: ft.Page):
                 print(f"DEBUG: Failed to create save dir {save_dir}: {e}")
         
         persistent_path = os.path.join(save_dir, "save_1.json")
-        
         current_dir = os.path.dirname(os.path.abspath(__file__))
         template_path = os.path.join(current_dir, "data", "gamedata.json")
         
@@ -70,7 +73,6 @@ def main(page: ft.Page):
                 gm.initialize(persistent_path)
             except Exception as e:
                 print(f"ERROR: Failed to load save file (Corrupted?): {e}")
-                # Rename corrupted file to avoid crash loop
                 try:
                     corrupted_path = persistent_path + ".corrupted"
                     if os.path.exists(corrupted_path):
@@ -80,63 +82,84 @@ def main(page: ft.Page):
                 except Exception as rename_error:
                     print(f"DEBUG: Failed to rename corrupted file: {rename_error}")
                 
-                # Fallback to template
                 print(f"DEBUG: Fallback - Loading Template: {template_path}")
                 gm.initialize(template_path)
         else:
             print(f"DEBUG: First Run - Loading Template: {template_path}")
             gm.initialize(template_path)
             
-        # FORCE Future Saves to Persistent Path & Directory
         gm.data_loader.file_path = persistent_path
-        # Important: Update SaveManager to write to the new relative directory
         gm.save_manager.save_dir = save_dir
-        
         print(f"DEBUG: Future Saves will go to: {persistent_path}")
 
-        # Define Navigation Callbacks
-        def start_game_flow():
-            page.clean()
-            app = MainLayout(page)
-            page.add(app)
-            page.update()
+        # --- Navigation & Routing ---
+        from views.start_screen import StartScreen
+        from views.team_select_screen import TeamSelectScreen
+        from views.main_layout import MainLayout
 
         def finalize_new_game(team_id):
             print(f"DEBUG: Finalizing New Game with Team: {team_id}")
-            # Update User Team (Set the selected team as the user's team)
             gm.user_team_id = team_id
-            # Force Save Initial State with new team
             gm.save_game(1)
-            # Enter Game
-            start_game_flow()
+            page.go("/game")
             
-        def team_select_flow():
-            page.clean()
-            from views.team_select_screen import TeamSelectScreen
-            # Pass page and callback
-            ts_screen = TeamSelectScreen(page, on_team_selected=finalize_new_game)
-            page.add(ts_screen)
+        def view_pop(view):
+            page.views.pop()
+            top_view = page.views[-1]
+            page.go(top_view.route)
+
+        page.on_view_pop = view_pop
+
+        def route_change(route):
+            print(f"DEBUG: Route Change to {page.route}")
+            page.views.clear()
+            
+            # Start Screen (Root)
+            has_save = os.path.exists(persistent_path)
+            start_screen = StartScreen(
+                page, 
+                on_continue=lambda: page.go("/game"), 
+                on_new_game=lambda: page.go("/team_select"), 
+                save_exists=has_save
+            )
+            page.views.append(
+                ft.View(
+                    "/",
+                    [start_screen],
+                    padding=0,
+                    bgcolor=deep_navy
+                )
+            )
+
+            if page.route == "/team_select":
+                # Reset game data before team select
+                gm.reset_game(template_path)
+                
+                ts_screen = TeamSelectScreen(page, on_team_selected=finalize_new_game)
+                page.views.append(
+                    ft.View(
+                        "/team_select",
+                        [ts_screen],
+                        padding=0,
+                        bgcolor=deep_navy
+                    )
+                )
+
+            if page.route == "/game":
+                app = MainLayout(page)
+                page.views.append(
+                    ft.View(
+                        "/game",
+                        [app],
+                        padding=0,
+                        bgcolor=deep_navy
+                    )
+                )
+            
             page.update()
 
-        def new_game_flow():
-            # 1. Reset Data (Load Template)
-            gm.reset_game(template_path)
-            # 2. Navigate to Team Selection
-            team_select_flow()
-            
-        # Initialize Start Screen
-        from views.start_screen import StartScreen
-        has_save = os.path.exists(persistent_path)
-        
-        start_screen = StartScreen(
-            page, 
-            on_continue=start_game_flow, 
-            on_new_game=new_game_flow, 
-            save_exists=has_save
-        )
-        
-        page.add(start_screen)
-        page.update()
+        page.on_route_change = route_change
+        page.go(page.route)
         
     except Exception as e:
         import traceback
